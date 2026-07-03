@@ -28,6 +28,7 @@ add_library(zhi_core STATIC
 )
 
 target_include_directories(zhi_core PUBLIC src)
+target_compile_definitions(zhi_core PRIVATE NOMINMAX)
 target_link_libraries(zhi_core PUBLIC winusb setupapi OpenSSL::Crypto)
 
 # ---- 可选：固件解析层的独立测试（不依赖Windows/USB，任何平台都能跑）----

@@ -2,6 +2,7 @@
 #include "../core/Logger.h"
 #include <setupapi.h>
 #include <initguid.h>
+#include <dbt.h>
 #include <sstream>
 
 #pragma comment(lib, "winusb.lib")
