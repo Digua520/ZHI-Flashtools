@@ -15,6 +15,7 @@
 #include <QLabel>
 #include <QComboBox>
 #include <QLineEdit>
+#include <QPushButton>
 #include <QTableWidget>
 #include <QProgressBar>
 #include <QTimer>
