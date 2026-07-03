@@ -1,0 +1,10 @@
+// app.rc —— Windows 资源脚本
+//
+// 用法：把这个文件加进 Visual Studio 项目（或在 CMakeLists.txt 里
+// target_sources(ZHI-Flashtools PRIVATE resources/app.rc)），
+// 编译出来的 exe 图标、任务栏图标、文件属性里的图标就都是这个了。
+//
+// IDI_APP_ICON 的数字 101 只是资源ID，随便取一个没冲突的整数即可；
+// 如果 UI 代码里要在运行时用 LoadIcon 加载它，就得对应这个 ID。
+
+101 ICON "app-icon.ico"

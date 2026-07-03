@@ -1,0 +1,52 @@
+name: 编译 Windows exe
+
+# 触发条件：推送代码到 main 分支，或者手动点击触发
+on:
+  push:
+    branches: [ main, master ]
+  workflow_dispatch: {}
+
+jobs:
+  build:
+    runs-on: windows-latest
+
+    steps:
+      - name: 拉取代码
+        uses: actions/checkout@v4
+
+      - name: 安装 Qt6
+        uses: jurplel/install-qt-action@v4
+        with:
+          version: '6.7.*'
+          host: 'windows'
+          target: 'desktop'
+          arch: 'win64_msvc2019_64'
+
+      - name: 安装 vcpkg 并装 OpenSSL
+        run: |
+          git clone https://github.com/microsoft/vcpkg.git C:\vcpkg
+          C:\vcpkg\bootstrap-vcpkg.bat
+          C:\vcpkg\vcpkg.exe install openssl:x64-windows
+
+      - name: 配置 CMake
+        run: |
+          cmake -B build -G "Visual Studio 17 2022" -A x64 `
+            -DCMAKE_TOOLCHAIN_FILE=C:\vcpkg\scripts\buildsystems\vcpkg.cmake `
+            -DCMAKE_PREFIX_PATH="${{ env.Qt6_DIR }}"
+
+      - name: 编译 Release
+        run: cmake --build build --config Release
+
+      - name: 打包产物（exe + 依赖的 Qt/OpenSSL dll）
+        run: |
+          mkdir dist
+          copy build\Release\ZHI-Flashtools.exe dist\
+          windeployqt --release dist\ZHI-Flashtools.exe
+          copy C:\vcpkg\installed\x64-windows\bin\libcrypto-3-x64.dll dist\ 2>$null
+          copy C:\vcpkg\installed\x64-windows\bin\libssl-3-x64.dll dist\ 2>$null
+
+      - name: 上传编译产物
+        uses: actions/upload-artifact@v4
+        with:
+          name: ZHI-Flashtools-windows
+          path: dist\
